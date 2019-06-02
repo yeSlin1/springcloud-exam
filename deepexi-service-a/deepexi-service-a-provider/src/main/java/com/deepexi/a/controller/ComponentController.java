@@ -1,12 +1,12 @@
-package com.deepexi.b.controller;
+package com.deepexi.a.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.deepexi.b.extension.ApplicationException;
-import com.deepexi.b.service.ProductService;
-import com.deepexi.b.depend.DemoClient;
-import com.deepexi.b.domain.eo.Product;
-
+import com.deepexi.a.depend.DemoClient;
+import com.deepexi.a.domain.eo.Component;
+import com.deepexi.a.extension.ApplicationException;
+import com.deepexi.a.service.ComponentService;
+import com.deepexi.util.config.Payload;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -16,15 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
-import com.deepexi.util.config.Payload;
-/**
- * Created by donh on 2018/11/5.
- */
-@Api(value = "productcontroller",description = "商品管理")
+@Api(value = "ComponentController",description = "组件管理")
 @RestController
-@RequestMapping("/api/v1/products")
-public class ProductController {
+@RequestMapping("/api/v1/components")
+public class ComponentController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -32,44 +27,46 @@ public class ProductController {
     private DemoClient demolient; // feign让跨服务调用能够看起来像本地调用
 
     @Autowired
-    private ProductService productService;
+    private ComponentService ComponentService;
 
-    @ApiOperation(value ="过滤价格查询所有商品",notes ="",httpMethod = "GET")
+    @ApiOperation(value ="根据条件查询获取组件",notes ="",httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page",value = "第几页",required = false,dataType = "Integer"),
             @ApiImplicitParam(name = "size",value = "每页查询数",required = false,dataType = "Integer"),
-            @ApiImplicitParam(name = "price",value = "价格",required = false,dataType = "Integer")
+            @ApiImplicitParam(name = "name",value = "组件名称",required = false,dataType = "Integer"),
+            @ApiImplicitParam(name = "status",value = "状态",required = false,dataType = "Integer"),
+            @ApiImplicitParam(name = "type",value = "分类",required = false,dataType = "Integer")
     })
     @GetMapping
-    public Payload getProductList(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+    public Payload getComponentList(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
                                   @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
-                                  @RequestParam(name = "price", required = false, defaultValue = "0") Integer price) {
-        return new Payload(productService.getProductList(page, size, price));
+                                  @RequestParam(name = "price", required = false, defaultValue = "1") Integer price) {
+        return new Payload(ComponentService.getComponentList(page, size, price));
     }
 
-    @GetMapping("/{id:[a-zA-Z0-9]+}")
-    public Payload getProductById(@PathVariable("id") String id) {
-        return new Payload(productService.getProductById(id));
+    @GetMapping("/{seq:[a-zA-Z0-9]+}")
+    public Payload getComponentById(@PathVariable("seq") String seq) {
+        return new Payload(ComponentService.getComponentById(seq));
     }
 
     @PostMapping
-    public Payload createProduct(@RequestBody Product product) {
-        return new Payload(productService.createProduct(product));
+    public Payload createComponent(@RequestBody Component Component) {
+        return new Payload(ComponentService.createComponent(Component));
     }
 
     @PutMapping("/{id:[a-zA-Z0-9]+}")
-    public Payload updateProductById(@PathVariable("id") String id, Product product) {
+    public Payload updateComponentById(@PathVariable("id") String id, Component Component) {
         return new Payload(null);
     }
 
     @DeleteMapping("/{id:[a-zA-Z0-9]+}")
-    public Payload deleteProductById(@PathVariable("id") String id) {
-        return new Payload(productService.deleteProductById(id));
+    public Payload deleteComponentById(@PathVariable("id") String id) {
+        return new Payload(ComponentService.deleteComponentById(id));
     }
 
     @GetMapping("/testError")
     public Payload testError() {
-        productService.testError();
+        ComponentService.testError();
         return new Payload(true);
     }
 

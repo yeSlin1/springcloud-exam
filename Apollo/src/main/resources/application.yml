@@ -1,0 +1,15 @@
+server:
+  port: 8768
+spring:
+  application:
+    name: config-client
+
+app:
+  id: deepexi-service-a-provider
+apollo:
+  meta: http://localhost:8080
+  # cacheDir: /opt/data/some-cache-dir #自定义缓存路径
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:3333/eureka/
